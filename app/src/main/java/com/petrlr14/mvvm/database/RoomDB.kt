@@ -19,20 +19,17 @@ public abstract class RoomDB : RoomDatabase() {
         fun getInstance(
             context: Context
         ): RoomDB {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = Room
+            //val tempInstance = INSTANCE
+            if (INSTANCE != null) {
+                return INSTANCE!!
+            } else {       
+                synchronized(this) {
+                    INSTANCE = Room
                     .databaseBuilder(context, RoomDB::class.java, "Repo_Database")
                     .build()
-                INSTANCE=instance
-                return instance
+                    return INSTANCE!!
+                }
             }
-
         }
-
     }
-
 }
