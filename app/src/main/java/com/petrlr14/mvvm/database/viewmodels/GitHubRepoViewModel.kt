@@ -18,6 +18,23 @@ class GitHubRepoViewModel(private val app: Application) : AndroidViewModel(app) 
     }
 
     private suspend fun insert(repo:GitHubRepo)=repository.insert(repo)
+    
+    fun retrieveRepo(user:String) = viewModelScope.launch{
+        this@GitHubRepoViewModel.nuke() //Esta función manda a llamar a la base de datos y hace un delete
+        val response = repository.retrieveReposAsync(user).await()
+        
+        if (respone.isSuccessful) with (response) {
+            this.body()?.forEach{
+                this@GitHubRepoViewModel.insert(it)
+            }    
+        } else with(response){
+            when(response.code()){
+                404->{
+                    Toast.makeText(app, "RIP", Toast.LENGTH).show()
+                }
+            }
+        }
+    }
 
     fun getAll():LiveData<List<GitHubRepo>>{
         return repository.getAll()
