@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import com.petrlr14.mvvm.database.daos.GitHubDAO
 import com.petrlr14.mvvm.database.entities.GitHubRepo
 
-class GitHubRepoRepository (private val repoDao:GitHubDAO){
+class GitHubRepoRepository (private val repoDao:GitHubDAO, private val githubService: GithubService){
 
     @WorkerThread
     suspend fun insert(repo:GitHubRepo){
@@ -19,6 +19,10 @@ class GitHubRepoRepository (private val repoDao:GitHubDAO){
     @WorkerThread
     suspend fun nuke(){
         return repoDao.nukeTable()
+    }
+    
+    fun retriveReposAsync(user: String): Deferred<Response<List>GithubRepo>>>{
+    return githubService.getRepos(user)
     }
 
 }
