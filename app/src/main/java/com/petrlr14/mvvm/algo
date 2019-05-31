@@ -1,0 +1,52 @@
+Creo paquete service.retrofit
+Crea la interfaz de GithubService
+
+-------------------------------------------------------------------------------------------
+const val GITHUB_BASE_URL="https://api.github.com/"
+
+interfce GithubService {
+  
+  @GET("user/{user}/repos" //Colocamos, lo que está en llave para recibir el endpoint, y no tiene la url base, 
+  //Para no estarla usando a cada rato, cuando hagamos el singleton allí colocaremos la URL base
+  fun getRepos(@Path("user") user:String):Deferred<Response<List<GithubRepo>>>
+  //Deferred es una cosa de corutinas que da las propiedades para ver si ya vino o no una lista.
+}
+
+-------------------------------------------------------------------------------------------
+
+**nos movemos a la clae Github Repo y agregamos las siguientes anotaciones para cada campo
+
+-------------------------------------------------------------------------------------------
+@field:Json(name="id") //identifica con qué nombre viene el parámetro que recibe allí.
+
+@field:Json(name="name")
+
+@field:Json(name="full_name")
+-------------------------------------------------------------------------------------------
+
+**Regresando a GithubService
+
+-------------------------------------------------------------------------------------------
+  
+  companion object{
+    fun getGithubService():GithubService{
+      retunr Retrofit
+        .builder
+        .baseUrl(GITHUB_BASE)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .build()
+        .create(GithubService::class.java
+    }
+    
+  }
+-------------------------------------------------------------------------------------------
+
+**Nos movemos a GithubRepoRepository para crear una nueva fun
+
+-------------------------------------------------------------------------------------------
+  fun retriveReposAsync(user: String): Deferred<Response<List>GithubRepo>>>{
+    return GithubService.getGithubService().getRepos(user)
+  }
+-------------------------------------------------------------------------------------------
+
