@@ -29,24 +29,33 @@ interfce GithubService {
 -------------------------------------------------------------------------------------------
   
   companion object{
-    fun getGithubService():GithubService{
-      retunr Retrofit
-        .builder
-        .baseUrl(GITHUB_BASE)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .build()
-        .create(GithubService::class.java
-    }
     
+    var INSTANCE : GithubService? = null
+  
+    fun getGithubService():GithubService{
+      if( INSTANCE != null){
+        return INSTANCE!!
+      } else {
+        INSTANCE = Retrofit
+              .builder
+              .baseUrl(GITHUB_BASE)
+              .addConverterFactory(MoshiConverterFactory.create())
+              .addCallAdapterFactory(CoroutineCallAdapterFactory())
+              .build()
+              .create(GithubService::class.java
+        return INSTANCE!!
+      } 
+    }
   }
 -------------------------------------------------------------------------------------------
 
 **Nos movemos a GithubRepoRepository para crear una nueva fun
 
 -------------------------------------------------------------------------------------------
+
+
   fun retriveReposAsync(user: String): Deferred<Response<List>GithubRepo>>>{
-    return GithubService.getGithubService().getRepos(user)
+    return githubService.getRepos(user)
   }
 -------------------------------------------------------------------------------------------
 
